@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/higress-group/oauth2-proxy/pkg/sessions/cookie"
 	"net/http"
 	"strconv"
 	"time"
@@ -150,7 +149,6 @@ func (s *StoredSessionLoader) loadSession(next http.Handler) http.Handler {
 // getValidatedSession is responsible for loading a session and making sure
 // that is valid.
 func (s *StoredSessionLoader) getValidatedSession(rw http.ResponseWriter, req *http.Request, callback func(args ...interface{})) (*sessionsapi.SessionState, bool, error) {
-	util.Logger.Infof("DEBUG: cookie_name: %+v", s.store.(*cookie.SessionStore).Cookie)
 	util.Logger.Infof("DEBUG: request cookie: %+v", req.Header)
 	session, err := s.store.Load(req)
 	if session == nil {
