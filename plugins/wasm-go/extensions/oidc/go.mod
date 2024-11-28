@@ -2,7 +2,7 @@ module github.com/alibaba/higress/plugins/wasm-go/extensions/oidc
 
 go 1.21
 
-toolchain go1.22.5
+toolchain go1.23.1
 
 replace github.com/alibaba/higress/plugins/wasm-go => ../..
 

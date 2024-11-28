@@ -16,6 +16,9 @@ COPY . .
 
 WORKDIR /workspace/extensions/$PLUGIN_NAME
 
+RUN rm go.mod
+RUN mv go.mod.docker go.mod
+
 RUN go mod tidy
 RUN tinygo build -o /main.wasm -scheduler=none -gc=custom -tags="custommalloc nottinygc_finalizer $EXTRA_TAGS" -target=wasi ./
 

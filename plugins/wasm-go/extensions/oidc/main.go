@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"strings"
 
+	hackOidc "github.com/alibaba/higress/plugins/wasm-go/pkg/oauth2-proxy"
 	oidc "github.com/higress-group/oauth2-proxy"
 	"github.com/higress-group/oauth2-proxy/pkg/apis/options"
 	"github.com/higress-group/oauth2-proxy/pkg/util"
@@ -29,7 +30,7 @@ func main() {
 	)
 }
 
-var oidcHandler *oidc.OAuthProxy
+var oidcHandler *hackOidc.OAuthProxy
 
 type PluginConfig struct {
 	options *options.Options
@@ -39,13 +40,17 @@ type PluginConfig struct {
 func parseConfig(json gjson.Result, config *PluginConfig, log wrapper.Log) error {
 	oidc.SetLogger(log)
 	opts, err := oidc.LoadOptions(json)
+
 	if err != nil {
 		return err
+	}
+	if opts.Providers[0].CodeChallengeMethod == "" {
+		opts.Providers[0].CodeChallengeMethod = "S256"
 	}
 	opts.Providers[0].Scope = strings.Replace(opts.Providers[0].Scope, ";", " ", -1)
 	config.options = opts
 
-	oidcHandler, err = oidc.NewOAuthProxy(opts)
+	oidcHandler, err = hackOidc.NewOAuthProxy(opts)
 	if err != nil {
 		return err
 	}
